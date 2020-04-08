@@ -6,38 +6,29 @@ import { faPhone } from '@fortawesome/free-solid-svg-icons'
 
 let SpeedDials = (props) => {
   const speedDialService = client.service('speeddial')
-  const user = queryString.parse(props.location.search).user
+  const username = queryString.parse(props.location.search).user
 
   const [speedDial, setSpeedDial] = useState({
     label: '',
     destination: '',
   })
 
-  const [speedDialList, setSpeedDialList] = useState([
-    {
-      label: 'Kids Playroom',
-      destination: '1000',
-    },
-    {
-      label: "Marty's Cell Phone",
-      destination: '912028055054',
-    },
-    {
-      label: "KC's Work Number",
-      destination: '917032951642',
-    },
-  ])
+  const [speedDialList, setSpeedDialList] = useState([])
 
   useEffect(() => {
     speedDialService
       .find()
-      .then((res) => console.log(res))
+      .then((res) => setSpeedDialList(res.data))
       .catch((err) => console.log(err))
   })
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
-    setSpeedDialList([...speedDialList, speedDial])
+    Object.assign(speedDial, { username })
+    speedDialService
+      .create(speedDial)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err))
 
     setSpeedDial({
       label: '',
@@ -45,15 +36,18 @@ let SpeedDials = (props) => {
     })
   }
 
-  const handleDelete = (index) => {
-    setSpeedDialList(speedDialList.filter((sd, idx) => idx !== index))
+  const handleDelete = (speedDial) => {
+    speedDialService
+      .remove(speedDial)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err))
   }
 
   return (
     <div className="App">
       <nav className="navbar navbar-expand-lg navbar-light bg-transparent pt-2">
         <p className="navbar-brand" style={{ textTransform: 'capitalize' }}>
-          {user}'s Speed Dials
+          {username}'s Speed Dials
         </p>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto"></ul>
@@ -97,18 +91,21 @@ let SpeedDials = (props) => {
       <div className="container pt-5">
         <div className="row">
           <div className="col-md-12">
-            {speedDialList.map((sd, index) => {
+            {speedDialList.map((speedDial) => {
               return (
-                <div className="card mb-2" key={index}>
+                <div className="card mb-2" key={speedDial._id}>
                   <div className="card-body">
-                    <h5 className="card-title">{sd.label}</h5>
+                    <h5 className="card-title">{speedDial.label}</h5>
                     <h6
                       className="card-subtitle mb-2 text-muted"
                       style={{ display: 'inline-block' }}
                     >
-                      {sd.destination}
+                      {speedDial.destination}
                     </h6>
-                    <a href={`sip://${sd.destination}`} className="card-link">
+                    <a
+                      href={`sip://${speedDial.destination}`}
+                      className="card-link"
+                    >
                       <FontAwesomeIcon
                         icon={faPhone}
                         color="green"
@@ -117,7 +114,7 @@ let SpeedDials = (props) => {
                       />
                     </a>
                     <button
-                      onClick={() => handleDelete(index)}
+                      onClick={() => handleDelete(speedDial)}
                       className="btn btn-outline-danger my-2 my-sm-0 float-right"
                       type="submit"
                     >
@@ -127,36 +124,6 @@ let SpeedDials = (props) => {
                 </div>
               )
             })}
-            {/* <table className='table table-bordered'>
-              <thead>
-                <tr>
-                  <th scope='col'>Destination</th>
-                  <th scope='col'>Label</th>
-                  <th scope='col'>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {speedDialList.map((sd, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>{sd.destination}</td>
-                      <td>{sd.label}</td>
-                      <td>
-                        <a href={`sip://${sd.destination}`}>
-                          <FontAwesomeIcon icon={faPhone} color='green' />
-                        </a>{' '}
-                        <Button
-                          onClick={() => deleteSpeedDial(index)}
-                          className='btn btn-danger btn-sm'
-                        >
-                          Delete
-                        </Button>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table> */}
           </div>
         </div>
       </div>
