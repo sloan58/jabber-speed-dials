@@ -1,0 +1,67 @@
+{
+  "name": "jabber-speed-dials",
+  "description": "A Custom Tab app to manage speed dials in Cisco Jabber",
+  "version": "0.0.0",
+  "homepage": "",
+  "private": true,
+  "main": "server",
+  "keywords": [
+    "feathers"
+  ],
+  "author": {
+    "name": "Marty Sloan",
+    "email": "marty@karmatek.io"
+  },
+  "contributors": [],
+  "bugs": {},
+  "directories": {
+    "lib": "server",
+    "test": "test/",
+    "config": "config/"
+  },
+  "engines": {
+    "node": "^12.0.0",
+    "yarn": ">= 0.18.0"
+  },
+  "scripts": {
+    "test": "yarn run lint && yarn run mocha",
+    "lint": "eslint server/. test/. --config .eslintrc.json",
+    "client": "cd client && yarn start",
+    "server": "nodemon server/",
+    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
+    "start": "node server/",
+    "mocha": "mocha test/ --recursive --exit"
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ],
+    "ignore": []
+  },
+  "dependencies": {
+    "@feathersjs/authentication": "^4.5.1",
+    "@feathersjs/authentication-local": "^4.5.1",
+    "@feathersjs/authentication-oauth": "^4.5.1",
+    "@feathersjs/configuration": "^4.5.1",
+    "@feathersjs/errors": "^4.5.1",
+    "@feathersjs/express": "^4.5.1",
+    "@feathersjs/feathers": "^4.5.1",
+    "@feathersjs/socketio": "^4.5.1",
+    "@feathersjs/transport-commons": "^4.5.2",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "feathers-mongoose": "^8.3.0",
+    "helmet": "^3.21.2",
+    "mongodb-core": "^3.2.7",
+    "mongoose": "^5.8.13",
+    "serve-favicon": "^2.5.0",
+    "winston": "^3.0.0"
+  },
+  "devDependencies": {
+    "axios": "^0.19.2",
+    "concurrently": "^5.1.0",
+    "eslint": "^6.8.0",
+    "mocha": "^7.0.1",
+    "nodemon": "^2.0.2"
+  }
+}
